@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+</head>
+<body>
+  <div id="app">
+    <v-app>
+      <v-main>
+        <v-container>
+            <!-- component -->
+          
+            <!-- end component -->
+        </v-container>
+      </v-main>
+    </v-app>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+  <script>
+    new Vue({
+    el: '#app',
+    vuetify: new Vuetify(),
+      data() {
+          return {
+            data: [],
+          }
+      },
+      mounted() {
+        this.treasury();
+        this.govtGraph();
+      },
+      created() {
+        //
+      },
+      methods:{
+          treasury(){
+            let treasuryTxs = [];
+            let total = 0;
+            uri = 'http://54.183.16.194/bank_transactions?account_number=23676c35fce177aef2412e3ab12d22bf521ed423c6f55b8922c336500a1a27c5&fee=NONE';
+            fetch(uri)
+            .then((response)=>{
+                return response.json();
+            }).then(data=>{
+                let bank_transactions = data.results;
+                for (const txs of bank_transactions){
+                    let amount = txs.amount;
+                    if(amount === 1){
+                        continue;
+                    }
+                    let obj = {
+                        "transactions" : amount,
+                    }
+                    treasuryTxs.push(obj);
+                    total = total + amount;
+                }
+                console.log(total);
+            }).catch(err=>{
+                console.log('error', err)
+            })
+          },
+
+          govtGraph(){
+            let treasuryTxs = [];
+            let total = 0;
+            const govtPK = '6e5ea8507e38be7250cde9b8ff1f7c8e39a1460de16b38e6f4d5562ae36b5c1a';
+            uri = 'http://54.183.16.194/bank_transactions?account_number=23676c35fce177aef2412e3ab12d22bf521ed423c6f55b8922c336500a1a27c5&fee=NONE';
+            fetch(uri)
+            .then((response)=>{
+                return response.json();
+            }).then(data=>{
+                let bank_transactions = data.results;
+                for (const txs of bank_transactions){
+                    let recipient = txs.recipient;
+                    if(recipient !== govtPK){
+                        continue;
+                    }
+                    treasuryTxs.push(txs);
+                }
+                console.log(treasuryTxs);
+            }).catch(err=>{
+                console.log('error', err)
+            })
+          }
+      },
+      watch: {
+        //
+      },
+      computed: {
+        //
+      },
+  })
+  </script>
+</body>
+</html>
