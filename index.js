@@ -48,6 +48,8 @@ new Vue({
         },
 
         profit(){
+          // 'http://54.183.16.194/bank_transactions?account_number=6e5ea8507e38be7250cde9b8ff1f7c8e39a1460de16b38e6f4d5562ae36b5c1a'
+          
           let day = this.day;
           let n = day - 1;
           let blocks = this.blocks();
