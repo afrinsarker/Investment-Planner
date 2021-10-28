@@ -8,7 +8,16 @@ new Vue({
             rate : 0.01,
             rateIncrementBy : 0.001,
             data: [],
-          }
+            headers: [
+              { text: 'Day', align: 'start', sortable: true, value: 'day'},
+              { text: 'Invest', align: 'start', sortable: false, value: 'invest'},
+              { text: 'Rate', align: 'start', sortable: true, value: 'rate'},
+              { text: 'Tnbc', align: 'start', sortable: false, value: 'tnbc'},
+              { text: 'TotalCrypto', align: 'start', value: 'totalCrypto', sortable: false },
+              { text: 'TotalInvest', align: 'start', value: 'totalInvest', sortable: false },
+          ],
+         }
+          
       },
       mounted() {
         //
