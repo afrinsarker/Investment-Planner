@@ -3,18 +3,26 @@ new Vue({
     vuetify: new Vuetify(),
       data () {
           return {
-            day: 6,
-            invest : 100,
-            rate : 0.01,
-            rateIncrementBy : 0.001,
+            valid: true,
+            show:false,
+            search: '',
+            loading: false,
+            interval: '',
+            invest : '',
+            rate : '',
+            rateIncrement : '',
             data: [],
+            calculations:[],
             headers: [
-              { text: 'Day', align: 'start', sortable: true, value: 'day'},
-              { text: 'Invest', align: 'start', sortable: false, value: 'invest'},
+              { text: 'Intervals', align: 'start', sortable: true, value: 'interval'},
+              { text: 'Investment', align: 'start', sortable: false, value: 'invest'},
               { text: 'Rate', align: 'start', sortable: true, value: 'rate'},
               { text: 'Tnbc', align: 'start', sortable: false, value: 'tnbc'},
-              { text: 'TotalCrypto', align: 'start', value: 'totalCrypto', sortable: false },
-              { text: 'TotalInvest', align: 'start', value: 'totalInvest', sortable: false },
+              { text: 'Total TNBC', align: 'start', value: 'totalCrypto', sortable: false },
+              { text: 'Total Investment', align: 'start', value: 'totalInvest', sortable: false },
+          ],
+          validation: [
+            v => !!v || 'This field is required',
           ],
          }
           
@@ -23,65 +31,72 @@ new Vue({
         //
       },
       created() {
-        this.profit();
+        //
       },
       methods:{
-        blocks(){
+        blocks(interval, invest, rate, rateIncrement){
           let blocks = [];
-          let day = this.day;
-          let invest = this.invest;
-          let rate = this.rate;
-          let rateIncrementBy = this.rateIncrementBy;
-
           let totalCrypto = 0;
           let totalInvest = 0;
 
-          for(let i =1; i <= day; i++){
+          for(let i =1; i <= interval; i++){
             let tnbc = invest / rate;
             totalCrypto = totalCrypto + tnbc;
             totalInvest = totalInvest + invest
 
             let obj = {
-                "day" : i,
+                "interval" : i,
                 "invest" : invest,
-                "rate" : rate,
-                "tnbc" : tnbc,
-                "totalCrypto" : totalCrypto,
+                "rate" : rate.toFixed(3),
+                "tnbc" : tnbc.toFixed(3),
+                "totalCrypto" : totalCrypto.toFixed(3),
                 "totalInvest" : totalInvest
             }
 
             blocks.push(obj);
-            rate = rate + rateIncrementBy;
+            rate = rate + rateIncrement;
           }
           return blocks;
         },
 
-        profit(){
-          // 'http://54.183.16.194/bank_transactions?account_number=6e5ea8507e38be7250cde9b8ff1f7c8e39a1460de16b38e6f4d5562ae36b5c1a'
-          
-          let day = this.day;
-          let n = day - 1;
-          let blocks = this.blocks();
+        profit(interval, invest, rate, rateIncrement){
+          let n = interval - 1;
+          let blocks = this.blocks(interval, invest, rate, rateIncrement);
           let block = blocks[n];
-          let rate = block.rate;
+          let dayRate = block.rate;
           let totalCrypto = block.totalCrypto;
           let totalInvest = block.totalInvest;
 
-          let salePrice = rate * totalCrypto;
+          let salePrice = dayRate * totalCrypto;
           let profit = salePrice - totalInvest;
 
           let obj = {
             "blocks" : blocks,
-            "day" : day,
+            "interval" : interval,
+            "invest" : invest,
             "rate" : rate,
+            "dayRate" : dayRate,
             "total_Investment" : totalInvest,
             "total_crypto" : totalCrypto,
-            "sale_price" : salePrice,
-            "profit" : profit,
+            "sale_price" : salePrice.toFixed(2),
+            "profit" : profit.toFixed(2),
           }
-          console.log(obj);
+          return obj;
+        },
+        calculate(){
+          const interval = Number(this.interval);
+          const invest = Number(this.invest);
+          const rate = Number(this.rate);
+          const rateIncrement = Number(this.rateIncrement);
 
-          this.data = obj;
+          // const interval = 2;
+          // const invest = Number(100);
+          // const rate = Number(0.01);
+          // const rateIncrement = Number(0.001);
+
+          let profit = this.profit(interval, invest, rate, rateIncrement);
+          this.data = profit;
+          this.show = true;
         }
       }
   })

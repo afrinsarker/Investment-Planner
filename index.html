@@ -7,89 +7,95 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
 </head>
 <body>
-    <div id="app">
-        <v-app>
-          <v-main>
-            <v-container>
-                <!-- component -->
-                <!-- Day, v-model(day) 
-                Daily Investment Amount, v-model(invest)
-                Initial Rate, v-model(rate)
-                Increment Rate By, v-model(rateIncrementBy) -->
-
-                <!-- day: 6
-                profit: 133.89110889110907
-                rate: 0.015000000000000003
-                sale_price: 733.8911088911091
-                total_Investment: 600
-                total_crypto: 48926.07392607 -->
-
-                <!---Navbar--->
-                  <v-app-bar app color="primary" dark>
-                    <!-- <v-app-bar-nav-icon class="hidden-md-and-up" @click.stop="left = !left"></v-app-bar-nav-icon>
-                    <v-spacer></v-spacer> -->
-                
-                  </v-app-bar>
-                <!---End Navbar--->
-                <!--- input box --->
-                <v-row no-gutters>
-                  <v-col
-                    cols="12"
-                    sm="4"
-                    md="6"
-                  >
-                  <v-card elevation="0">
-                    <v-card-text>
-                        <v-form>
-                            <v-text-field v-model="day" label="Day" name="Day" type="text" class="rounded-0" outlined></v-text-field>
-                            <v-text-field v-model="invest" label="Invest" name="Daily Investment Amount" type="text" class="rounded-0" outlined></v-text-field>
-                            <v-text-field v-model="rate" label="Initial Rate" name="Initial Rate" type="text" class="rounded-0" outlined></v-text-field>
-                            <v-text-field v-model="rateIncrementBy" label="Increment Rate By" name="Increment Rate By" type="text"  class="rounded-0" outlined></v-text-field>
-                           
-                            <div class="white--text">
-                                <v-btn color="primary" block tile @click="profit">Calculator</v-btn>
-                            </div>
-                        </v-form>
-                    </v-card-text>
-                  </v-card>
-                  </v-col>
-                  <v-col
-                  cols="12"
-                  sm="4"
-                  md="6"
-                  >
-                    <v-card
-                      class="pa-4"
-                      elevation="0"
-                    >
-                    <p>profit: 133.89110889110907</p>
-                    <p>rate: 0.015000000000000003</p>
-                    <p>sale_price: 733.8911088911091</p>
-                    <p>total_Investment: 600</p>
-                    <p>total_crypto: 48926.07392607</p>
-                    </v-card>
-                  </v-col>
-                </v-row>
-            
-                <!--- input box --->
-                <!-- datatable -->                        
-                <v-data-table class="elevation-1" :headers="headers" :footer-props="{itemsPerPageOptions: [5,10,15],itemsPerPageText: 'Data Per Page','show-current-page': true,'show-first-last-page': true}">
-                </v-data-table>
-            <!-- End datatable -->
-            </v-container>
-          </v-main>
-          <!---footer-->
-            <div>
-              <v-footer color="primary" class="hidden-sm-and-down py-4 white--text" >
-
-                </v-footer>
-              <div class="primary darken-1 py-4 text-center white--text">
-                  <span>Copyright © Techminate {{ new Date().getFullYear() }}</span>
-              </div>
-            </div>
-          <!--End footer-->
-        </v-app>
+  <div id="app">
+    <v-app>
+      <!---Navbar--->
+      <v-app-bar app color="primary" dark>
+      </v-app-bar>
+      <!---End Navbar--->
+      <v-main>
+        <v-container>
+        
+          <!--- input box --->
+          <v-row>
+            <v-col cols="12" sm="4" md="6">
+            <v-card>
+              <v-card-text>
+                  <v-form v-model="valid" @submit.prevent="calculate()" enctype="multipart/form-data">
+                    <v-text-field v-model="interval" label="Intervals" placeholder="6" type="number" class="rounded-0" :rules="validation" outlined required></v-text-field>
+                    <v-text-field v-model="invest" label="Base Investment" placeholder="100" type="number" class="rounded-0" :rules="validation" outlined required></v-text-field>
+                    <v-text-field v-model="rate" label="Initial Rate" placeholder="0.01" type="number" class="rounded-0" :rules="validation" outlined required></v-text-field>
+                    <v-text-field v-model="rateIncrement" label="Increment Rate" placeholder="0.001" type="number"  class="rounded-0" :rules="validation" outlined required></v-text-field>
+                    <div class="white--text">
+                      <v-btn type="submit" color="primary" block tile>Calculate</v-btn>
+                    </div>
+                  </v-form>
+              </v-card-text>
+            </v-card>
+            </v-col>
+            <v-col cols="12" sm="4" md="6">
+              <v-card class="pa-4" v-if="show">
+                <h3 class="pb-5">Results</h3>
+                <p>Intervals : {{ this.data.interval }}</p>
+                <p>Base Investment : {{ this.data.invest }}</p>
+                <p>Initial Rate : {{ this.data.rate }}</p>
+                <p>Rate On This Interval : {{ this.data.dayRate }}</p>
+                <p>Total Investment : {{ this.data.total_Investment }}</p>
+                <p>Total TNBC : {{ this.data.total_crypto }}</p>
+                <p>Total Price : {{ this.data.sale_price }}</p>
+                <p>Profit : {{ this.data.profit }}</p>
+              </v-card>
+              <v-card class="pa-4" v-else>
+                <h3 class="pb-5">Instructions</h3>
+                <h4>Intervals</h4>
+                <p>How many times you want to invest.</p>
+                <h4>Base Investment</h4>
+                <p>A fixed amount that you want to invest each time.</p>
+                <h4>Initial Rate</h4>
+                <p>The rate that you want to start the investment.</p>
+                <h4>Increment Rate</h4>
+                <p>It determines the next interval rate. For example: If initial rate is 0.01 and you want to invest again when the price will would be 0.011, than the increament rate would be 0.001. On each interval the rate would be increamented by 0.001 and the calculation would be based on this rate.</p>
+              </v-card>
+            </v-col>
+          </v-row>
+          <!--- End input box --->
+          <!-- Data Table-->
+          <div v-if="show" class="pt-5">
+            <v-card>
+              <v-toolbar flat >
+                <v-toolbar-title>Calculation Details</v-toolbar-title>
+                <v-divider class="mx-4" inset vertical></v-divider>
+                <v-text-field v-model="search" append-icon="mdi-magnify" label="Search" color="deep-purple" single-line hide-details ></v-text-field>
+                <v-divider class="mx-4" inset vertical></v-divider>
+                <v-spacer></v-spacer>
+                <v-divider class="mx-4" inset vertical></v-divider>
+                <v-btn color="cyan" small dark class="mb-2">Print</v-btn>
+                <v-divider class="mx-4" inset vertical></v-divider>
+              </v-toolbar>
+              <!-- datatable -->                        
+              <v-data-table class="elevation-0" :headers="headers" :items="data.blocks" :search="search" :loading="loading"
+                  loading-text="Loading... Please wait" :footer-props="{itemsPerPageOptions: [5,10,15],itemsPerPageText: 'Data Per Page','show-current-page': true,'show-first-last-page': true}">
+                  <template v-slot:[`item.actions`]="{ item }" >
+                      <v-icon small color="cyan" class="mr-2" @click="editBtn(item.id)"> mdi-pencil </v-icon>
+                      <v-icon small color="red"  @click="deleteBtn(item.id)"> mdi-delete </v-icon>
+                  </template>
+              </v-data-table>
+              <!-- End datatable -->
+            </v-card>
+          </div>
+        </v-container>
+      </v-main>
+      <!---footer-->
+      <div>
+        <v-footer color="primary" class="hidden-sm-and-down py-4 white--text" >
+        </v-footer>
+        <div class="primary darken-1 py-4 text-center white--text">
+          <span>{{ new Date().getFullYear() }}</span>
+        </div>
       </div>
+      <!--End footer-->
+    </v-app>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
