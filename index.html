@@ -24,12 +24,70 @@
                 total_Investment: 600
                 total_crypto: 48926.07392607 -->
 
-
-
+                <!---Navbar--->
+                  <v-app-bar app color="primary" dark>
+                    <!-- <v-app-bar-nav-icon class="hidden-md-and-up" @click.stop="left = !left"></v-app-bar-nav-icon>
+                    <v-spacer></v-spacer> -->
                 
-                <!-- end component -->
+                  </v-app-bar>
+                <!---End Navbar--->
+                <!--- input box --->
+                <v-row no-gutters>
+                  <v-col
+                    cols="12"
+                    sm="4"
+                    md="6"
+                  >
+                  <v-card elevation="0">
+                    <v-card-text>
+                        <v-form>
+                            <v-text-field v-model="day" label="Day" name="Day" type="text" class="rounded-0" outlined></v-text-field>
+                            <v-text-field v-model="invest" label="Invest" name="Daily Investment Amount" type="text" class="rounded-0" outlined></v-text-field>
+                            <v-text-field v-model="rate" label="Initial Rate" name="Initial Rate" type="text" class="rounded-0" outlined></v-text-field>
+                            <v-text-field v-model="rateIncrementBy" label="Increment Rate By" name="Increment Rate By" type="text"  class="rounded-0" outlined></v-text-field>
+                           
+                            <div class="white--text">
+                                <v-btn color="primary" block tile @click="profit">Calculator</v-btn>
+                            </div>
+                        </v-form>
+                    </v-card-text>
+                  </v-card>
+                  </v-col>
+                  <v-col
+                  cols="12"
+                  sm="4"
+                  md="6"
+                  >
+                    <v-card
+                      class="pa-4"
+                      elevation="0"
+                    >
+                    <p>profit: 133.89110889110907</p>
+                    <p>rate: 0.015000000000000003</p>
+                    <p>sale_price: 733.8911088911091</p>
+                    <p>total_Investment: 600</p>
+                    <p>total_crypto: 48926.07392607</p>
+                    </v-card>
+                  </v-col>
+                </v-row>
+            
+                <!--- input box --->
+                <!-- datatable -->                        
+                <v-data-table class="elevation-1" :headers="headers" :footer-props="{itemsPerPageOptions: [5,10,15],itemsPerPageText: 'Data Per Page','show-current-page': true,'show-first-last-page': true}">
+                </v-data-table>
+            <!-- End datatable -->
             </v-container>
           </v-main>
+          <!---footer-->
+            <div>
+              <v-footer color="primary" class="hidden-sm-and-down py-4 white--text" >
+
+                </v-footer>
+              <div class="primary darken-1 py-4 text-center white--text">
+                  <span>Copyright © Techminate {{ new Date().getFullYear() }}</span>
+              </div>
+            </div>
+          <!--End footer-->
         </v-app>
       </div>
 
