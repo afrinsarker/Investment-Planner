@@ -58,7 +58,9 @@ new Vue({
           }
           return blocks;
         },
-
+        validate () {
+          this.$refs.form.validate()
+        },
         profit(interval, invest, rate, rateIncrement){
           let n = interval - 1;
           let blocks = this.blocks(interval, invest, rate, rateIncrement);

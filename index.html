@@ -11,6 +11,11 @@
     <v-app>
       <!---Navbar--->
       <v-app-bar app color="primary" dark>
+        <v-img
+          max-height="150"
+          max-width="200"
+          src="img/logo white.png" alt="img"
+        ></v-img>
       </v-app-bar>
       <!---End Navbar--->
       <v-main>
@@ -21,13 +26,15 @@
             <v-col cols="12" sm="4" md="6">
             <v-card>
               <v-card-text>
-                  <v-form v-model="valid" @submit.prevent="calculate()" enctype="multipart/form-data">
+                  <v-form v-model="valid" lazy-validation ref="form" @submit.prevent="calculate()" enctype="multipart/form-data">
                     <v-text-field v-model="interval" label="Intervals" placeholder="6" type="number" class="rounded-0" :rules="validation" outlined required></v-text-field>
                     <v-text-field v-model="invest" label="Base Investment" placeholder="100" type="number" class="rounded-0" :rules="validation" outlined required></v-text-field>
                     <v-text-field v-model="rate" label="Initial Rate" placeholder="0.01" type="number" class="rounded-0" :rules="validation" outlined required></v-text-field>
                     <v-text-field v-model="rateIncrement" label="Increment Rate" placeholder="0.001" type="number"  class="rounded-0" :rules="validation" outlined required></v-text-field>
                     <div class="white--text">
-                      <v-btn type="submit" color="primary" block tile>Calculate</v-btn>
+                      <v-btn type="submit" :disabled="!valid"
+                      @click="validate"
+                      color="primary" block tile>Calculate</v-btn>
                     </div>
                   </v-form>
               </v-card-text>
@@ -88,6 +95,10 @@
       <!---footer-->
       <div>
         <v-footer color="primary" class="hidden-sm-and-down py-4 white--text" >
+          
+          <span>Developed by Techminate</span>
+          <v-spacer></v-spacer>
+          <span>Powerd by Techminate</span>
         </v-footer>
         <div class="primary darken-1 py-4 text-center white--text">
           <span>{{ new Date().getFullYear() }}</span>
